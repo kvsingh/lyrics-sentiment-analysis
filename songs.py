@@ -5,7 +5,7 @@ import config
 
 artists = config.artists
 outputfilename = "lyrics.csv"
-client_access_token = "ugjWi8MlOxPQkOL-q0WUFpwaN2nZg76bv8cuHl6mjXPi4wvxE3TcNxdWjE1zbVPr"
+client_access_token = "your-access-token"
 
 def get_lyrics(url):
     request = urllib2.Request(url)
@@ -14,20 +14,24 @@ def get_lyrics(url):
                        "curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b) (ipv6 enabled)")  # Must include user agent of some sort, otherwise 403 returned
 
     page = urllib2.urlopen(request)
-    print url
     soup = BeautifulSoup(page, "lxml")
     lyrics = soup.find("div", class_= "lyrics")
     return lyrics.text
 
-for artist in artists:
+f2 = open('urls', 'wb')
+
+for artist in ["Eminem"]:
     a = search(artist, outputfilename, client_access_token)
     urls = map(lambda t: t[3], a)
     print artist, len(urls)
 
     f = open('lyrics/' + artist, 'wb')
+    f2.write(artist)
     for url in urls:
         lyrics = get_lyrics(url)
-        #print lyrics
+        f2.write(url)
+        print url
         f.write(lyrics.encode("utf8"))
 
     f.close()
+f2.close()

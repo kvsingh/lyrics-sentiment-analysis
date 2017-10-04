@@ -14,9 +14,6 @@ for artist in artists:
 
     #remove identifiers like chorus, verse, etc
     all_words = re.sub(r'[\(\[].*?[\)\]]', '', all_words)
-    #all_words = re.sub(r'\n', '', all_words)
-    #all_words = re.sub(r'^\s*$', '', all_words)
-    #all_words = all_words.strip()
 
     all_words = os.linesep.join([s for s in all_words.splitlines() if s])
     print all_words

@@ -1,25 +1,34 @@
-from textblob import TextBlob
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 import config
 artists = config.artists
 
-sentiments = []
-
+df = pd.DataFrame(columns=('artist', 'pos', 'neu', 'neg'))
+sid = SentimentIntensityAnalyzer()
+i=0
 for artist in artists:
+    num_positive = 0
+    num_negative = 0
+    num_neutral = 0
+
     f = open('lyrics/' + artist + '-cleaned', 'rb')
-    all_words = ''
-    avg = 0
-    num = 0
     for sentence in f.readlines():
         this_sentence = sentence.decode('utf-8')
-        all_words += this_sentence
-        blob = TextBlob(this_sentence)
-        avg += blob.polarity
-        num+=1
+        comp = sid.polarity_scores(this_sentence)
+        comp = comp['compound']
+        if comp >= 0.5:
+            num_positive += 1
+        elif comp > -0.5 and comp < 0.5:
+            num_neutral += 1
+        else:
+            num_negative += 1
 
-    avg = avg / num
+    num_total = num_negative + num_neutral + num_positive
+    percent_negative = (num_negative / float(num_total)) * 100
+    percent_neutral = (num_neutral / float(num_total)) * 100
+    percent_positive = (num_positive / float(num_total)) * 100
+    df.loc[i] = (artist, percent_positive, percent_neutral, percent_negative)
+    i+=1
 
-    blob = TextBlob(all_words)
-    #print artist, avg, blob.polarity
-    sentiments.append((artist, avg, blob.polarity))
-
-print sorted(sentiments, key=lambda a:a[1], reverse=True)
+df.plot.bar(x='artist', stacked=True)
+plt.show()
