@@ -1,6 +1,6 @@
 from search import search
 from bs4 import BeautifulSoup
-import urllib2
+import urllib2, os, re
 import config
 
 artists = config.artists

@@ -21,3 +21,6 @@ for artist in artists:
     f = open('lyrics/' + artist + '-cleaned', 'wb')
     f.write(all_words.encode('utf-8'))
     f.close()
+
+
+\(\[].*?[\)\]
